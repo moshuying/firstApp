@@ -25,6 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -43,10 +44,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    public static String result;
-    private Button btn;//点击按钮访问
-    private final static String HTML_URL = "https://www.baidu.com";
+    public static String result="123";
+    private static String URLIS = "https://www.baidu.com/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        EditText editText1 = findViewById (R.id.getinput);
+        editText1.setText(URLIS);
 //        btn = findViewById(R.id.clickToChangeMessage);//绑定ID
 //        btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -80,43 +81,15 @@ public class MainActivity extends AppCompatActivity {
 //                new Thread(new Runnable() {//创建子线程
 //                    @Override
 //                    public void run() {
-//                        getwebinfo();//把路径选到MainActivity中
+//                        getDatasync();
 //                    }
 //                }).start();//启动子线程
 //            }
 //        });
+//        TextView textView = findViewById(R.id.textView2);
+//        textView.setText(result);
     }
-    private void getwebinfo() {
-        try {
-            //1,找水源--创建URL
-            URL url = new URL("https://www.baidu.com/");//放网站
-            //2,开水闸--openConnection
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            //3，建管道--InputStream
-            InputStream inputStream = httpURLConnection.getInputStream();
-            //4，建蓄水池蓄水-InputStreamReader
-            InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
-            //5，水桶盛水--BufferedReader
-            BufferedReader bufferedReader = new BufferedReader(reader);
 
-            StringBuffer buffer = new StringBuffer();
-            String temp = null;
-
-            while ((temp = bufferedReader.readLine()) != null) {
-                //取水--如果不为空就一直取
-                buffer.append(temp);
-            }
-            bufferedReader.close();//记得关闭
-            reader.close();
-            inputStream.close();
-            Log.e("MAIN",buffer.toString());//打印结果
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -129,80 +102,36 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
-    public void changeMainButton(View view){
-//        Gson gson = new Gson();
-//        ShopInfo shopInfo = gson.fromJson(json, ShopInfo.class);
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(EXTRA_MESSAGE);
-    }
-    public void show(View view){
-        String json = "[\n" +
-                "    {\n" +
-                "        \"id\": 1,\n" +
-                "        \"imagePath\": \"http://blog.csdn.net/qq_29269233/f1.jpg\",\n" +
-                "        \"name\": \"金鱼1\",\n" +
-                "        \"price\": 12.3\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"id\": 2,\n" +
-                "        \"imagePath\": \"http://blog.csdn.net/qq_29269233/f2.jpg\",\n" +
-                "        \"name\": \"金鱼2\",\n" +
-                "        \"price\": 12.5\n" +
-                "    }\n" +
-                "]";
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(json);
-    }
+
     public void show(String json){
         TextView textView = findViewById(R.id.textView2);
         textView.setText(json);
     }
     public void send(View view) {
-        TextView textView = findViewById(R.id.textView2);
-        String url = "http://www.baidu.com";
-        try {
-            getDatasync();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        getwebinfo();
+        getDatasync();
     }
     public void getDatasync(){
-        new Thread(new Runnable() {
+            new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    EditText editText1 = findViewById (R.id.getinput);
                     OkHttpClient client = new OkHttpClient();//创建OkHttpClient对象
                     Request request = new Request.Builder()
-                            .url("https://www.baidu.com/")//请求接口。如果需要传参拼接到接口后面。
+                            .url(editText1.getText().toString())//请求接口。如果需要传参拼接到接口后面。
                             .build();//创建Request 对象
                     Response response = null;
                     response = client.newCall(request).execute();//得到Response 对象
                     if (response.isSuccessful()) {
-                        Log.d("kwwl","response.code()=="+response.code());
-                        Log.d("kwwl","response.message()=="+response.message());
-                        Log.d("kwwl","res=="+response.body().string());
+//                        Log.d("kwwl","response.code()=="+response.code());
+//                        Log.d("kwwl","response.message()=="+response.message());
+                        result = response.body().string();
+                        TextView textView = findViewById(R.id.textView2);
+                        textView.setText(result);
+//                        Log.d("kwwl","res=="+result);
                         //此时的代码执行在子线程，修改UI的操作请使用handler跳转到UI线程。
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-    private void sendByOKHttp() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("http://www.163.com").build();
-                try {
-                    Response response = client.newCall(request).execute();//发送请求
-                    String result = response.body().string();
-                    Log.d("tag", "result: "+result);
-                    show(result);
-                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
