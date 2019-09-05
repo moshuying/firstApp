@@ -18,4 +18,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/text_home_view"
+        android:layout_width="390dp"
+        android:layout_height="58dp"
+        tools:layout_editor_absoluteX="11dp"
+        tools:layout_editor_absoluteY="44dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

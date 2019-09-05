@@ -74,20 +74,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         EditText editText1 = findViewById (R.id.getinput);
         editText1.setText(URLIS);
-//        btn = findViewById(R.id.clickToChangeMessage);//绑定ID
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {//监听按钮
-//                new Thread(new Runnable() {//创建子线程
-//                    @Override
-//                    public void run() {
-//                        getDatasync();
-//                    }
-//                }).start();//启动子线程
-//            }
-//        });
-//        TextView textView = findViewById(R.id.textView2);
-//        textView.setText(result);
     }
 
     @Override
@@ -103,10 +89,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
-    public void show(String json){
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(json);
-    }
     public void send(View view) {
         getDatasync();
     }
@@ -123,13 +105,9 @@ public class MainActivity extends AppCompatActivity {
                     Response response = null;
                     response = client.newCall(request).execute();//得到Response 对象
                     if (response.isSuccessful()) {
-//                        Log.d("kwwl","response.code()=="+response.code());
-//                        Log.d("kwwl","response.message()=="+response.message());
                         result = response.body().string();
                         TextView textView = findViewById(R.id.textView2);
                         textView.setText(result);
-//                        Log.d("kwwl","res=="+result);
-                        //此时的代码执行在子线程，修改UI的操作请使用handler跳转到UI线程。
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
